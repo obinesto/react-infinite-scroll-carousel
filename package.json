@@ -1,0 +1,46 @@
+{
+  "name": "@obinesto/react-infinite-scroll-carousel",
+  "version": "1.0.0",
+  "description": "A React infinite scroll carousel component with automatic scrolling and navigation",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+    "scripts": {
+    "build": "rollup -c",
+    "test": "jest",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "react",
+    "carousel",
+    "infinite-scroll",
+    "slider",
+    "typescript"
+  ],
+  "author": "Cyprian Obi",
+  "license": "MIT",
+  "type": "module",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-typescript": "^12.1.4",
+    "@testing-library/jest-dom": "^6.7.0",
+    "@testing-library/react": "^16.3.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.1.10",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "lucide-react": "^0.539.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "rollup": "^4.46.3",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "ts-jest": "^29.4.1",
+    "tslib": "^2.8.1",
+    "typescript": "^5.9.2"
+  }
+}
