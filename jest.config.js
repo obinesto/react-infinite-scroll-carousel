@@ -1,17 +1,11 @@
 export default {
-  testEnvironment: 'jsdom',
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.mjs'],
-  moduleNameMapper: {
-    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
-    '\\.(gif|ttf|eot|svg|png)$': '<rootDir>/test/__mocks__/fileMock.js'
-  },
+  testEnvironment: "jsdom",
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.mjs"],
   transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest'
+    "^.+\\.(ts|tsx)$": "ts-jest",
   },
-  extensionsToTreatAsEsm: ['.ts', '.tsx'],
+  extensionsToTreatAsEsm: [".ts", ".tsx", ".mjs"],
   globals: {
-    'ts-jest': {
-      useESM: true
-    }
-  }
+    "ts-jest": { useESM: true },
+  },
 };
