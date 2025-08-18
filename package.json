@@ -1,6 +1,6 @@
 {
   "name": "@obinesto/react-infinite-scroll-carousel",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "A React infinite scroll carousel component with automatic scrolling and navigation",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
