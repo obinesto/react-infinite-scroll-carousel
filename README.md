@@ -53,6 +53,7 @@ function MyComponent() {
 | itemClassName | string | "" | CSS classes for item containers |
 | containerClassName | string | "" | CSS classes for the carousel container |
 | navigationButtonClassName | string | "" | CSS classes for navigation buttons |
+| loadMoreThreshold | number | 5 | The number of items remaining before loading more to create the infinite scroll effect. |
 
 ## License
 

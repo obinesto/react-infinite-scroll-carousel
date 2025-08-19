@@ -10,6 +10,7 @@ export interface CarouselProps<T> {
   itemClassName?: string;
   containerClassName?: string;
   navigationButtonClassName?: string;
+  loadMoreThreshold?: number;
 }
 
 export function Carousel<T>({
@@ -20,6 +21,7 @@ export function Carousel<T>({
   itemClassName = "",
   containerClassName = "",
   navigationButtonClassName = "",
+  loadMoreThreshold = 5,
 }: CarouselProps<T>) {
   const [displayItems, setDisplayItems] = useState([...items]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -36,7 +38,7 @@ export function Carousel<T>({
   }, [scrollInterval]);
 
   useEffect(() => {
-    if (currentIndex > 0 && currentIndex >= displayItems.length - 5) {
+    if (currentIndex > 0 && currentIndex >= displayItems.length - loadMoreThreshold) {
       setDisplayItems((prevItems) => [...prevItems, ...items]);
     }
 
@@ -44,7 +46,7 @@ export function Carousel<T>({
     if (container) {
       container.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
-  }, [currentIndex, displayItems.length, items, scrollAmount]);
+  }, [currentIndex, displayItems.length, items, scrollAmount, loadMoreThreshold]);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
