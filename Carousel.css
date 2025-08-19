@@ -1,0 +1,47 @@
+.infinite-scroll-carousel-container {
+  position: relative;
+  display: flex;
+  width: 100%;
+  overflow-x: scroll;
+  gap: 1rem; /* 16px */
+  scroll-behavior: smooth;
+}
+
+.scroll-bar-hide {
+  scrollbar-width: none;
+}
+
+.scroll-bar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.infinite-scroll-carousel-nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 9999px;
+  background-color: #2d3748; /* bg-gray-800 */
+  color: #ffffff; /* text-white */
+  cursor: pointer;
+  padding: 0.5rem; /* 8px */
+}
+
+.left-position {
+  left: calc(var(--spacing) * 10) /* 2.5rem = 40px */;
+}
+
+@media (width >= 48rem /* 768px */) {
+  .left-position {
+    left: calc(var(--spacing) * 20) /* 5rem = 80px */;
+  }
+}
+
+.right-position {
+  right: calc(var(--spacing) * 10) /* 2.5rem = 40px */;
+}
+
+@media (width >= 48rem /* 768px */) {
+  .right-position {
+    right: calc(var(--spacing) * 20) /* 5rem = 80px */;
+  }
+}

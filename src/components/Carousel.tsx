@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 export interface CarouselProps<T> {
   items: T[];
   renderItem: (item: T, index: number) => ReactNode;
+  keyExtractor?: (item: T, index: number) => string | number;
   scrollInterval?: number;
   scrollAmount?: number;
   itemClassName?: string;
@@ -16,6 +17,7 @@ export interface CarouselProps<T> {
 export function Carousel<T>({
   items,
   renderItem,
+  keyExtractor,
   scrollInterval = 3000,
   scrollAmount = 300,
   itemClassName = "",
@@ -66,17 +68,14 @@ export function Carousel<T>({
     }
   };
 
-  const defaultContainerClass = "relative flex w-full overflow-x-scroll gap-4 scroll-smooth";
-  const defaultNavigationButtonClass = "absolute top-1/2 -translate-y-1/2 rounded-full bg-gray-800 text-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed p-2";
-
   return (
     <div className="relative w-full">
       <section
         ref={scrollContainerRef}
-        className={`${defaultContainerClass} ${containerClassName}`}
+        className={`infinite-scroll-carousel-container scroll-bar-hide ${containerClassName}`}
       >
         {displayItems.map((item, index) => (
-          <div key={index} className={itemClassName}>
+          <div key={keyExtractor ? keyExtractor(item, index) : index} className={itemClassName}>
             {renderItem(item, index)}
           </div>
         ))}
@@ -85,7 +84,7 @@ export function Carousel<T>({
       <button
         type="button"
         title="arrow left"
-        className={`${defaultNavigationButtonClass} left-4 ${navigationButtonClassName}`}
+        className={`infinite-scroll-carousel-nav-button left-position ${navigationButtonClassName}`}
         onClick={scrollLeft}
       >
         <ChevronLeft />
@@ -93,7 +92,7 @@ export function Carousel<T>({
       <button
         type="button"
         title="arrow right"
-        className={`${defaultNavigationButtonClass} right-4 ${navigationButtonClassName}`}
+        className={`infinite-scroll-carousel-nav-button right-position ${navigationButtonClassName}`}
         onClick={scrollRight}
       >
         <ChevronRight />

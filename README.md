@@ -3,7 +3,7 @@
 A React carousel component with infinite scroll functionality and automatic scrolling.
 
 ## Installation
-
+ 
 ```bash
 npm install react-infinite-scroll-carousel
 ```
@@ -42,11 +42,17 @@ function MyComponent() {
 }
 ```
 
+## Styling
+
+The component comes with a default stylesheet that you can import. You can override the default styles by passing your own class names to the containerClassName, itemClassName, and navigationButtonClassName props
+
+
 ## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | items | T[] | required | Array of items to display in the carousel |
+| keyExtractor | (item: T, index: number) => string \| number | `index` | Function to extract a unique key for each item. |
 | renderItem | (item: T, index: number) => ReactNode | required | Function to render each item |
 | scrollInterval | number | 3000 | Time in milliseconds between auto-scrolls |
 | scrollAmount | number | 300 | Number of pixels to scroll each time |
