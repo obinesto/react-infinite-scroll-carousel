@@ -5,7 +5,7 @@ A React carousel component with infinite scroll functionality and automatic scro
 ## Installation
  
 ```bash
-npm install react-infinite-scroll-carousel
+npm i @obinesto/react-infinite-scroll-carousel
 ```
 
 ## Usage
