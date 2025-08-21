@@ -1,6 +1,6 @@
 {
   "name": "@obinesto/react-infinite-scroll-carousel",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A React infinite scroll carousel component with automatic scrolling and navigation",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -41,6 +41,7 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "rollup": "^4.46.3",
+    "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "ts-jest": "^29.4.1",
     "tslib": "^2.8.1",
