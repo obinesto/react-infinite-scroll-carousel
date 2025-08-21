@@ -1,3 +1,8 @@
+.infinite-scroll-carousel-body{
+  position: relative;
+  width: 100%;
+}
+
 .infinite-scroll-carousel-container {
   position: relative;
   display: flex;
@@ -23,7 +28,7 @@
   background-color: #2d3748; /* bg-gray-800 */
   color: #ffffff; /* text-white */
   cursor: pointer;
-  padding: 0.5rem; /* 8px */
+  padding: 2px;
 }
 
 .left-position {

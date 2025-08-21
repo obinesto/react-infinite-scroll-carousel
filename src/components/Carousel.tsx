@@ -69,7 +69,7 @@ export function Carousel<T>({
   };
 
   return (
-    <div className="relative w-full">
+    <div className="infinite-scroll-carousel-body">
       <section
         ref={scrollContainerRef}
         className={`infinite-scroll-carousel-container scroll-bar-hide ${containerClassName}`}
