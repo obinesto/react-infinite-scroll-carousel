@@ -40,7 +40,9 @@ export function Carousel<T>({
   }, [scrollInterval]);
 
   useEffect(() => {
-    if (currentIndex > 0 && currentIndex >= displayItems.length - loadMoreThreshold) {
+    const effectiveThreshold = Math.max(1, Math.min(loadMoreThreshold, items.length));
+
+    if (currentIndex > 0 && currentIndex >= displayItems.length - effectiveThreshold) {
       setDisplayItems((prevItems) => [...prevItems, ...items]);
     }
 
