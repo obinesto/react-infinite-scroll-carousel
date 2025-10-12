@@ -11,8 +11,8 @@ npm install @obinesto/react-infinite-scroll-carousel
 ## Usage
 
 ```tsx
-import 'react-infinite-scroll-carousel/dist/index.css';
-import { Carousel } from 'react-infinite-scroll-carousel';
+import '@obinesto/react-infinite-scroll-carousel/dist/index.css';
+import { Carousel } from '@obinesto/react-infinite-scroll-carousel';
 
 interface MyItem {
   title: string;
