@@ -23,5 +23,5 @@ jobs:
       - uses: actions/github-script@v9
         with:
           script: |
-            const policy = require('./.github/scripts/dependabot-policy.cjs');
+            const policy = require('./.github/scripts/dependabot/dependabot-policy.cjs');
             await policy.recheckHeldPullRequests({github, context, core});

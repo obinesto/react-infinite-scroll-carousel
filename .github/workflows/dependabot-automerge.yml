@@ -34,5 +34,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         with:
           script: |
-            const resolver = require('./.github/scripts/resolve-dependabot.cjs');
+            const resolver = require('./.github/scripts/dependabot/resolve-dependabot.cjs');
             await resolver.resolvePullRequest({github, context, core, exec});

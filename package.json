@@ -1,16 +1,32 @@
 {
   "name": "@obinesto/react-infinite-scroll-carousel",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A React infinite scroll carousel component with automatic scrolling and navigation",
   "main": "dist/index.js",
-  "module": "dist/index.esm.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./dist/index.css": "./dist/index.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/obinesto/react-infinite-scroll-carousel.git"
+  },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c",
-    "test": "jest"
+    "prebuild": "node scripts/clean-dist.cjs",
+    "build": "rollup -c rollup.config.mjs",
+    "typecheck": "tsc --noEmit --pretty false",
+    "test": "jest",
+    "test:release": "node --test .github/scripts/npm/npm-release.test.cjs",
+    "test:package": "node scripts/check-package.cjs"
   },
   "keywords": [
     "react",
@@ -21,7 +37,7 @@
   ],
   "author": "Cyprian Obi",
   "license": "MIT",
-  "type": "module",
+  "type": "commonjs",
   "devDependencies": {
     "@babel/preset-env": "^7.28.3",
     "@babel/preset-react": "^7.27.1",

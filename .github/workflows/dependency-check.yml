@@ -48,13 +48,13 @@ jobs:
           node-version: "26"
           package-manager-cache: false
       - name: Test dependency policy
-        run: node --test .github/scripts/dependabot-policy.test.cjs
+        run: node --test .github/scripts/dependabot/dependabot-policy.test.cjs
       - name: Check dependency release policy
         id: policy
         uses: actions/github-script@v9
         with:
           script: >
-            const policy = require('./.github/scripts/dependabot-policy.cjs');
+            const policy = require('./.github/scripts/dependabot/dependabot-policy.cjs');
 
             await policy.checkReleaseAge({github, context, core, projects:
             JSON.parse(process.env.DEPENDENCY_PROJECTS)});

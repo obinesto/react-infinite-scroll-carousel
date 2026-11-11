@@ -1,62 +1,154 @@
-name: Build, Test and Publish
+name: Build, Test and Stage Release
 
 on:
   push:
     branches: [main]
-    tags: ['v*']
   pull_request:
     branches: [main]
+
+permissions:
+  contents: read
+
+# Do not interrupt staging or run two releases against the same latest version.
+concurrency:
+  group: npm-${{ github.workflow }}-${{ github.event_name == 'push' && 'main' || github.ref }}
+  cancel-in-progress: false
 
 jobs:
   build_and_test:
     # Dependabot validation runs after release-policy approval in dependency-check.yml.
     if: github.event_name != 'pull_request' || github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: '26'
-          cache: 'npm'
+          node-version: '24'
+          cache: npm
+          registry-url: https://registry.npmjs.org
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
-        run: npm test
+      - name: Check types
+        run: npm run typecheck
+
+      - name: Test carousel
+        run: npm test -- --runInBand
+
+      - name: Test release policy
+        run: npm run test:release
 
       - name: Build package
         run: npm run build
 
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/
+      - name: Validate package contents and module entry points
+        run: npm run test:package
 
-  publish:
+      - name: Explain failed validation
+        if: failure()
+        run: |
+          echo '::error::Package validation failed. Open the first failed step for the exact error. Publication is blocked.'
+          printf '### Validation failed\n\nOpen the first failed step. Check dependency installation, types, tests, build output, and package entry points. No staging job will run.\n' >> "$GITHUB_STEP_SUMMARY"
+
+  stage_release:
     needs: build_and_test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
-
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: '26'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: '24'
+          package-manager-cache: false
+          registry-url: https://registry.npmjs.org
 
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist/
+      - name: Check npm staged publishing support
+        run: |
+          NPM_VERSION="$(npm --version)" node -e 'const version = process.env.NPM_VERSION; const [major, minor] = version.split(".").map(Number); if (major < 11 || (major === 11 && minor < 15)) { console.error("Staged publishing requires npm 11.15.0 or later. Update the runner npm CLI. Found: " + version); process.exit(1); } console.log("Staged publishing supported by npm " + version);'
 
-      - name: Publish to npm
-        run: npm publish --access public
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Resolve release from npm tags and published versions
+        id: release
+        run: node .github/scripts/npm/npm-release.cjs
+
+      - name: Set package version for this release
+        if: steps.release.outputs.publish == 'true'
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          npm version "$RELEASE_VERSION" --no-git-tag-version --ignore-scripts --allow-same-version
+          npm pkg set gitHead="$GITHUB_SHA"
+
+      - name: Build package
+        if: steps.release.outputs.publish == 'true'
+        run: npm run build
+
+      - name: Validate package contents and module entry points
+        if: steps.release.outputs.publish == 'true'
+        run: npm run test:package
+
+      - name: Pack release
+        id: pack
+        if: steps.release.outputs.publish == 'true'
+        run: |
+          npm pack --ignore-scripts --json > "$RUNNER_TEMP/npm-pack.json"
+          node -e 'const fs = require("node:fs"); const [pack] = JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP + "/npm-pack.json", "utf8")); fs.appendFileSync(process.env.GITHUB_OUTPUT, "tarball=" + pack.filename + "\n");'
+
+      - name: Verify registry has not changed
+        if: steps.release.outputs.publish == 'true'
+        env:
+          EXPECTED_LATEST: ${{ steps.release.outputs.latest }}
+        run: node .github/scripts/npm/npm-release.cjs verify
+
+      - name: Stage release for maintainer approval
+        id: stage
+        if: steps.release.outputs.publish == 'true'
+        env:
+          TARBALL: ${{ steps.pack.outputs.tarball }}
+        run: npm stage publish "./$TARBALL" --access public --tag latest --provenance
+
+      - name: Report staged version and approval instructions
+        if: steps.stage.outcome == 'success'
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          {
+            printf '\n### Release awaiting approval\n\n'
+            printf 'Staged `%s` from commit `%s`. This version is not public yet.\n\n' "$RELEASE_VERSION" "$GITHUB_SHA"
+            printf 'Open Staged Packages in your npm account. Review the package version, commit, contents, and latest tag. Approve with 2FA to publish, or reject the stage.\n\n'
+            printf 'Resolve pending stages before staging another release. After approval, sync package.json and package-lock.json to the published version. CI does not approve releases, push commits, or create Git tags.\n'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Explain failed release
+        if: failure()
+        run: |
+          echo '::error::Validation or staging failed. See the first failed step and the release summary for details.'
+          {
+            printf '\n### Release failed\n\n'
+            printf 'Open the first failed step for the exact error. CI stages packages only; publication requires your approval on npm.\n\n'
+            printf -- '- Install: check the lockfile and registry availability.\n'
+            printf -- '- Types, tests, build, or package: fix the reported error before retrying.\n'
+            printf -- '- Release policy: use the version suggested in its error message.\n'
+            printf -- '- Stage: confirm the npm trusted publisher uses this owner, repository, and publish.yml. Direct publish and dist-tag permissions can stay disabled. Check package permissions and npm status.\n'
+            printf -- '- Version conflict: check npm Staged Packages for an existing stage. Review and approve it, or reject it before retrying. Do not unpublish existing versions.\n'
+            printf -- '- Registry conflict: inspect npm latest and the published gitHead before retrying.\n'
+            printf -- '- If staging succeeded but reporting failed, check Staged Packages and the staging logs before retrying. CI cannot list or approve private pending stages with OIDC.\n'
+          } >> "$GITHUB_STEP_SUMMARY"

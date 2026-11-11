@@ -9,13 +9,13 @@ export default {
   external: ["react", "react-dom"],
   output: [
     { file: "dist/index.js", format: "cjs", sourcemap: true },
-    { file: "dist/index.esm.js", format: "esm", sourcemap: true },
+    { file: "dist/index.mjs", format: "esm", sourcemap: true },
   ],
   plugins: [
     peerDepsExternal(),
     resolve(),
     commonjs(),
-    typescript({ tsconfig: "./tsconfig.json" }),
+    typescript({ tsconfig: "./tsconfig.build.json" }),
     copy({
       targets: [{ src: "Carousel.css", dest: "dist", rename: "index.css" }],
       copyOnce: true,

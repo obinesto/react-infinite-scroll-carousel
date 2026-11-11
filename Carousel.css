@@ -9,7 +9,16 @@
   width: 100%;
   overflow-x: scroll;
   gap: 1rem; /* 16px */
-  scroll-behavior: smooth;
+}
+
+.infinite-scroll-carousel-copy {
+  display: flex;
+  flex: 0 0 auto;
+  gap: inherit;
+}
+
+.infinite-scroll-carousel-copy > * {
+  flex-shrink: 0;
 }
 
 .scroll-bar-hide {

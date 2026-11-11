@@ -45,7 +45,9 @@ function MyComponent() {
 
 ## Styling
 
-The component comes with a default stylesheet that you can import. You can override the default styles by passing your own class names to the containerClassName, itemClassName, and navigationButtonClassName props
+Import the default stylesheet as shown above.
+Use `containerClassName`, `itemClassName`, and `navigationButtonClassName` to add custom styles.
+Apply item widths through `itemClassName`.
 
 
 ## Props
@@ -55,12 +57,24 @@ The component comes with a default stylesheet that you can import. You can overr
 | items | T[] | required | Array of items to display in the carousel |
 | keyExtractor | (item: T, index: number) => string \| number | `index` | Function to extract a unique key for each item. |
 | renderItem | (item: T, index: number) => ReactNode | required | Function to render each item |
-| scrollInterval | number | 3000 | Time in milliseconds between auto-scrolls |
+| scrollInterval | number | 3000 | Time in milliseconds between automatic scrolls. Set to zero to disable. |
 | scrollAmount | number | 300 | Number of pixels to scroll each time |
 | itemClassName | string | "" | CSS classes for item containers |
 | containerClassName | string | "" | CSS classes for the carousel container |
 | navigationButtonClassName | string | "" | CSS classes for navigation buttons |
-| loadMoreThreshold | number | 5 | The number of items remaining before loading more to create the infinite scroll effect. |
+| loadMoreThreshold | number | — | Deprecated. Accepted for compatibility. The viewport width now determines the copy count. |
+
+## Scrolling behavior
+
+The carousel scrolls continuously in both directions.
+Use the navigation buttons or scroll manually to move through items.
+Set `scrollInterval={0}` to disable automatic scrolling.
+Steps longer than one full loop use an equivalent shorter distance.
+Changes to `items` appear on the next render.
+`renderItem` and `keyExtractor` receive the index within the source array for each copy.
+Keys must be unique within the source array.
+Empty carousels disable navigation and automatic scrolling.
+Import the stylesheet before use.
 
 ## License
 
