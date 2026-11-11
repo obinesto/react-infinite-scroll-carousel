@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { Carousel } from './Carousel';
+import { Carousel } from '../src/components/Carousel';
 
 describe('Carousel', () => {
   const mockItems = [

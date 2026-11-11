@@ -1,12 +1,11 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "esnext",
+    "target": "esnext",
+    "module": "commonjs",
     "lib": ["dom", "esnext"],
     "jsx": "react",
     "declaration": true,
     "declarationDir": "dist",
-    "moduleResolution": "node",
     "noEmit": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -14,6 +13,6 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
   },
-  "include": ["src"],
+  "include": ["src", "tests/Carousel.test.tsx"],
   "exclude": ["node_modules", "dist"]
 }
