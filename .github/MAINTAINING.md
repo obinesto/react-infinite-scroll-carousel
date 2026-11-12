@@ -15,9 +15,12 @@ npm run test:package
 
 The package check validates packed file names, TypeScript declarations, CommonJS loading, and ESM loading.
 
-## Stage a release from main
+## Stage a release from publish
 
-The `publish.yml` workflow validates pull requests and stages a release after a push to `main` passes CI.
+The `publish.yml` workflow validates pull requests that target `publish`.
+Merge a release PR into `publish` to run CI and stage the release.
+The `publish` branch requires pull requests for updates.
+Updates to `main` do not trigger this release workflow.
 The version becomes public only after you approve it on npm with 2FA.
 Tag pushes do not stage packages.
 The workflow uses npm trusted publishing. It does not use an npm token.

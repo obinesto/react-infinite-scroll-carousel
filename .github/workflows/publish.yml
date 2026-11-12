@@ -2,16 +2,16 @@ name: Build, Test and Stage Release
 
 on:
   push:
-    branches: [main]
+    branches: [publish]
   pull_request:
-    branches: [main]
+    branches: [publish]
 
 permissions:
   contents: read
 
 # Do not interrupt staging or run two releases against the same latest version.
 concurrency:
-  group: npm-${{ github.workflow }}-${{ github.event_name == 'push' && 'main' || github.ref }}
+  group: npm-${{ github.workflow }}-${{ github.event_name == 'push' && 'publish' || github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -59,7 +59,7 @@ jobs:
 
   stage_release:
     needs: build_and_test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/publish'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
