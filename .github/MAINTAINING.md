@@ -108,3 +108,39 @@ If staging succeeds but reporting fails, check npm's Staged Packages before retr
 Rerunning a commit already published as `latest` skips publication when npm's `gitHead` matches.
 External publishers can still race with CI or your approval step.
 npm rejects a duplicate version instead of replacing it.
+
+## Creating a GitHub version tag
+
+Create the tag after you approve the release and its version is public on npm.
+
+1. Read the published version and its source commit:
+
+   ```bash
+   npm view @obinesto/react-infinite-scroll-carousel@1.0.8 version gitHead --json
+   ```
+
+2. Fetch the repository history and existing tags:
+
+   ```bash
+   git fetch origin --tags
+   ```
+
+3. Check the published source commit:
+
+   ```bash
+   git show --no-patch PUBLISHED_COMMIT
+   ```
+
+4. Create an annotated tag at that commit and push only that tag:
+
+   ```bash
+   git tag -a v1.0.8 PUBLISHED_COMMIT -m "Release v1.0.8"
+   git push origin v1.0.8
+   ```
+
+Replace `1.0.8` with the published version in each command.
+Replace `PUBLISHED_COMMIT` with the exact `gitHead` returned by npm.
+Use that commit even if your local branch has newer commits.
+If npm has no `gitHead`, confirm the source commit from the release workflow before tagging.
+If the tag already exists, verify its commit. Do not overwrite it.
+These commands create a Git tag. They do not create GitHub release notes.
